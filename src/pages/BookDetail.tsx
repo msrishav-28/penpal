@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { ChevronLeft, ChevronRight, MoreHorizontal } from 'lucide-react';
 
-const BookDetail: React.FC = () => {
-  const { id } = useParams();
+const BookDetail = () => {
   const [selectedRating, setSelectedRating] = useState(0);
   const [reviewText, setReviewText] = useState('');
 

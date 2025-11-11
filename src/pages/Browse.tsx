@@ -1,7 +1,25 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Search, Filter, Grid, List, Star, TrendingUp, Award, Clock } from 'lucide-react';
 
-const Browse: React.FC = () => {
+interface BookData {
+  id: number;
+  title: string;
+  author: string;
+  cover: string;
+  rating: number;
+  genres: string[];
+  reviews: number;
+  ratingsCount: string;
+  description: string;
+  publishYear: number;
+  pages: number;
+  trending: boolean;
+  newRelease: boolean;
+  awardWinner: boolean;
+  price: string;
+}
+
+const Browse = () => {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [activeCategory, setActiveCategory] = useState('trending');
   const [searchQuery, setSearchQuery] = useState('');
@@ -27,6 +45,7 @@ const Browse: React.FC = () => {
       cover: "https://images.pexels.com/photos/1029141/pexels-photo-1029141.jpeg?auto=compress&cs=tinysrgb&w=200&h=300&fit=crop",
       rating: 4.8,
       ratingsCount: "542,891",
+      reviews: 42891,
       description: "Aging and reclusive Hollywood movie icon Evelyn Hugo is finally ready to tell the truth about her glamorous and scandalous life.",
       genres: ["Fiction", "Romance", "Historical Fiction"],
       publishYear: 2017,
@@ -43,6 +62,7 @@ const Browse: React.FC = () => {
       cover: "https://images.pexels.com/photos/1029141/pexels-photo-1029141.jpeg?auto=compress&cs=tinysrgb&w=200&h=300&fit=crop",
       rating: 4.7,
       ratingsCount: "189,432",
+      reviews: 18432,
       description: "An Easy & Proven Way to Build Good Habits & Break Bad Ones",
       genres: ["Self Help", "Psychology", "Productivity"],
       publishYear: 2018,
@@ -59,6 +79,7 @@ const Browse: React.FC = () => {
       cover: "https://images.pexels.com/photos/1029141/pexels-photo-1029141.jpeg?auto=compress&cs=tinysrgb&w=200&h=300&fit=crop",
       rating: 4.6,
       ratingsCount: "1,234,567",
+      reviews: 123567,
       description: "For years, rumors of the 'Marsh Girl' have haunted Barkley Cove, a quiet town on the North Carolina coast.",
       genres: ["Fiction", "Mystery", "Literary Fiction"],
       publishYear: 2018,
@@ -75,6 +96,7 @@ const Browse: React.FC = () => {
       cover: "https://images.pexels.com/photos/1029141/pexels-photo-1029141.jpeg?auto=compress&cs=tinysrgb&w=200&h=300&fit=crop",
       rating: 4.5,
       ratingsCount: "98,765",
+      reviews: 9876,
       description: "In a peaceful retirement village, four friends meet weekly to investigate cold cases.",
       genres: ["Mystery", "Crime", "Humor"],
       publishYear: 2020,
@@ -91,6 +113,7 @@ const Browse: React.FC = () => {
       cover: "https://images.pexels.com/photos/1029141/pexels-photo-1029141.jpeg?auto=compress&cs=tinysrgb&w=200&h=300&fit=crop",
       rating: 4.9,
       ratingsCount: "876,543",
+      reviews: 87654,
       description: "A memoir about a young girl who, kept out of school, leaves her survivalist family and goes on to earn a PhD from Cambridge University.",
       genres: ["Memoir", "Biography", "Education"],
       publishYear: 2018,
@@ -107,6 +130,7 @@ const Browse: React.FC = () => {
       cover: "https://images.pexels.com/photos/1029141/pexels-photo-1029141.jpeg?auto=compress&cs=tinysrgb&w=200&h=300&fit=crop",
       rating: 4.4,
       ratingsCount: "445,321",
+      reviews: 44532,
       description: "A woman's act of violence against her husband triggers a chain of events that will shake her world.",
       genres: ["Thriller", "Mystery", "Psychological"],
       publishYear: 2019,
@@ -166,7 +190,7 @@ const Browse: React.FC = () => {
     );
   };
 
-  const BookCard = ({ book }: { book: any }) => (
+  const BookCard = ({ book }: { book: BookData }) => (
     <div className="glass rounded-card shadow-3d overflow-hidden hover:shadow-3d-hover transition-all duration-300 hover:scale-[1.02] group">
       <div className="relative">
         <img
@@ -231,7 +255,7 @@ const Browse: React.FC = () => {
     </div>
   );
 
-  const BookListItem = ({ book }: { book: any }) => (
+  const BookListItem = ({ book }: { book: BookData }) => (
     <div className="glass rounded-card shadow-3d p-4 hover:shadow-3d-hover transition-all duration-300 hover:scale-[1.01]">
       <div className="flex space-x-4">
         <div className="relative">

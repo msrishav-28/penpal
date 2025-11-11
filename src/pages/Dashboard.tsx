@@ -1,64 +1,71 @@
-import React from 'react';
-import ReadingChallenge from '../components/ReadingChallenge';
-import ReaderHighlights from '../components/ReaderHighlights';
-import UpdatesFeed from '../components/UpdatesFeed';
-import NewsSection from '../components/NewsSection';
-import GoodreadsAwards from '../components/GoodreadsAwards';
+import ReadingChallenge from '../components/features/ReadingChallenge';
+import ReaderHighlights from '../components/features/ReaderHighlights';
+import UpdatesFeed from '../components/features/UpdatesFeed';
+import NewsSection from '../components/features/NewsSection';
+import GoodreadsAwards from '../components/features/GoodreadsAwards';
+import { Loading } from '../components/ui';
+import { useApp } from '../contexts/AppContext';
+import { useCurrentlyReading } from '../hooks/useReadingProgress';
 
-const Dashboard: React.FC = () => {
+const Dashboard = () => {
+  const { user } = useApp();
+  const { books: currentlyReading, loading } = useCurrentlyReading();
+
+  if (loading) {
+    return <Loading message="Loading your dashboard..." />;
+  }
+
   return (
     <div className="max-w-[1200px] mx-auto px-6 py-8">
       <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr_280px] gap-6">
         {/* Left Column with floating animation */}
         <div className="space-y-6 animate-float">
-          <ReadingChallenge />
+          <ReadingChallenge 
+            year={user?.readingGoal?.year || new Date().getFullYear()}
+            booksCompleted={user?.readingGoal?.completed || 0}
+            goal={user?.readingGoal?.target || 50}
+          />
           
           {/* Currently Reading with glassmorphism */}
           <div className="glass rounded-card shadow-3d p-6 hover:shadow-3d-hover transition-all duration-300 hover:scale-[1.02] group">
-            <h2 className="text-[18px] font-semibold text-gray-900 mb-4 leading-tight group-hover:text-green-600 transition-colors duration-300">Currently Reading</h2>
+            <h2 className="text-[18px] font-semibold text-gray-900 mb-4 leading-tight group-hover:text-green-600 transition-colors duration-300">
+              Currently Reading
+            </h2>
             
             <div className="space-y-4">
-              <div className="flex space-x-3 p-3 rounded-element hover:bg-white/30 transition-all duration-300">
-                <img
-                  src="https://images.pexels.com/photos/1029141/pexels-photo-1029141.jpeg?auto=compress&cs=tinysrgb&w=64&h=96&fit=crop"
-                  alt="The Adventures of Tom Sawyer"
-                  className="w-16 h-24 object-cover rounded-element flex-shrink-0 shadow-3d hover:shadow-3d-hover transition-all duration-300 hover:scale-105"
-                />
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-medium text-gray-900 text-[14px] mb-1 line-clamp-2 hover:text-green-600 transition-colors duration-300">The Adventures of Tom Sawyer</h3>
-                  <p className="text-[12px] text-gray-600 mb-2">Mark Twain</p>
-                  <div className="mt-2">
-                    <div className="flex items-center justify-between text-[11px] text-gray-500 mb-1">
-                      <span>132 / 228 Pages</span>
-                      <span>(64%)</span>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-1.5 overflow-hidden">
-                      <div className="bg-gradient-to-r from-green-500 to-green-600 h-1.5 rounded-full transition-all duration-500 hover:shadow-glow" style={{ width: '64%' }}></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="flex space-x-3 p-3 rounded-element hover:bg-white/30 transition-all duration-300">
-                <img
-                  src="https://images.pexels.com/photos/1029141/pexels-photo-1029141.jpeg?auto=compress&cs=tinysrgb&w=64&h=96&fit=crop"
-                  alt="The Names"
-                  className="w-16 h-24 object-cover rounded-element flex-shrink-0 shadow-3d hover:shadow-3d-hover transition-all duration-300 hover:scale-105"
-                />
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-medium text-gray-900 text-[14px] mb-1 line-clamp-2 hover:text-green-600 transition-colors duration-300">The Names</h3>
-                  <p className="text-[12px] text-gray-600 mb-2">Florence Knapp</p>
-                  <div className="mt-2">
-                    <div className="flex items-center justify-between text-[11px] text-gray-500 mb-1">
-                      <span>145 / 336 Pages</span>
-                      <span>(37%)</span>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-1.5 overflow-hidden">
-                      <div className="bg-gradient-to-r from-green-500 to-green-600 h-1.5 rounded-full transition-all duration-500 hover:shadow-glow" style={{ width: '37%' }}></div>
+              {currentlyReading.length === 0 ? (
+                <p className="text-sm text-gray-600 text-center py-4">
+                  No books in progress. Start reading!
+                </p>
+              ) : (
+                currentlyReading.slice(0, 2).map((progress) => (
+                  <div key={progress._id} className="flex space-x-3 p-3 rounded-element hover:bg-white/30 transition-all duration-300">
+                    <img
+                      src={progress.book?.coverUrl || 'https://images.pexels.com/photos/1029141/pexels-photo-1029141.jpeg?auto=compress&cs=tinysrgb&w=64&h=96&fit=crop'}
+                      alt={progress.book?.title || 'Book cover'}
+                      className="w-16 h-24 object-cover rounded-element flex-shrink-0 shadow-3d hover:shadow-3d-hover transition-all duration-300 hover:scale-105"
+                    />
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-medium text-gray-900 text-[14px] mb-1 line-clamp-2 hover:text-green-600 transition-colors duration-300">
+                        {progress.book?.title || 'Unknown Title'}
+                      </h3>
+                      <p className="text-[12px] text-gray-600 mb-2">{progress.book?.author || 'Unknown Author'}</p>
+                      <div className="mt-2">
+                        <div className="flex items-center justify-between text-[11px] text-gray-500 mb-1">
+                          <span>{progress.currentPage} / {progress.totalPages} Pages</span>
+                          <span>({progress.percentage}%)</span>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-1.5 overflow-hidden">
+                          <div 
+                            className="bg-gradient-to-r from-green-500 to-green-600 h-1.5 rounded-full transition-all duration-500 hover:shadow-glow" 
+                            style={{ width: `${progress.percentage}%` }}
+                          ></div>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </div>
+                ))
+              )}
             </div>
             
             <button className="mt-4 w-full glass-dark text-gray-700 py-2 px-4 rounded-button text-[14px] font-medium hover:bg-white/20 transition-all duration-300 hover:scale-105 hover:shadow-3d">

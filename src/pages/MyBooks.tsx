@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { Grid, List, Download, Upload, Search, Filter, MoreHorizontal } from 'lucide-react';
+import { useState } from 'react';
+import { Grid, List, Download, Upload, Search, Filter } from 'lucide-react';
 
-const MyBooks: React.FC = () => {
+const MyBooks = () => {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [activeTab, setActiveTab] = useState('all');
 
@@ -145,7 +145,20 @@ const MyBooks: React.FC = () => {
     );
   };
 
-  const BookCard = ({ book, showProgress = false }: { book: any; showProgress?: boolean }) => (
+  interface BookCardData {
+    id: number;
+    title: string;
+    author: string;
+    cover: string;
+    rating: number;
+    totalRatings: string;
+    genres: string[];
+    progress?: number;
+    currentPage?: number;
+    totalPages?: number;
+  }
+
+  const BookCard = ({ book, showProgress = false }: { book: BookCardData; showProgress?: boolean }) => (
     <div className="glass rounded-card shadow-3d overflow-hidden hover:shadow-3d-hover transition-all duration-300 hover:scale-[1.02]">
       <div className="flex p-4">
         <img

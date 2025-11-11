@@ -1,9 +1,7 @@
-import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { Play, ChevronRight } from 'lucide-react';
+import { useState } from 'react';
+import { Play } from 'lucide-react';
 
-const AuthorProfile: React.FC = () => {
-  const { id } = useParams();
+const AuthorProfile = () => {
   const [activeTab, setActiveTab] = useState('books');
 
   const author = {

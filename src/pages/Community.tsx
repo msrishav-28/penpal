@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { MessageCircle, Users, BookOpen, TrendingUp, Calendar, Pin, Heart, Share2, MoreHorizontal } from 'lucide-react';
+import { useState } from 'react';
+import { MessageCircle, Users, BookOpen, TrendingUp, Pin, Heart, Share2, MoreHorizontal } from 'lucide-react';
 
-const Community: React.FC = () => {
+const Community = () => {
   const [activeTab, setActiveTab] = useState('discussions');
 
   const communityStats = {
