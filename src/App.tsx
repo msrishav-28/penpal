@@ -15,6 +15,7 @@ import ReadingTimer from './pages/ReadingTimer';
 import Analytics from './pages/Analytics';
 import Achievements from './pages/Achievements';
 import Import from './pages/Import';
+import BookClubs from './pages/BookClubs';
 import Login from './pages/Login';
 import Register from './pages/Register';
 
@@ -126,6 +127,16 @@ function App() {
                 <ProtectedRoute>
                   <Layout>
                     <Import />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/clubs"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <BookClubs />
                   </Layout>
                 </ProtectedRoute>
               }

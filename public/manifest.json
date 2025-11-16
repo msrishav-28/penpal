@@ -1,0 +1,66 @@
+{
+  "name": "PenPal - Modern Book Tracking",
+  "short_name": "PenPal",
+  "description": "Track your reading journey with AI-powered recommendations, reading timer, and social features",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#10b981",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["books", "lifestyle", "productivity"],
+  "screenshots": [
+    {
+      "src": "/screenshot1.png",
+      "sizes": "540x720",
+      "type": "image/png",
+      "label": "Reading Dashboard"
+    },
+    {
+      "src": "/screenshot2.png",
+      "sizes": "540x720",
+      "type": "image/png",
+      "label": "Reading Timer"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Reading Timer",
+      "url": "/timer",
+      "description": "Start a reading session"
+    },
+    {
+      "name": "My Books",
+      "url": "/my-books",
+      "description": "View your library"
+    },
+    {
+      "name": "Browse Books",
+      "url": "/browse",
+      "description": "Discover new books"
+    }
+  ],
+  "share_target": {
+    "action": "/share",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  }
+}

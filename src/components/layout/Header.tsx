@@ -124,6 +124,16 @@ const Header = () => {
               <Upload className="w-4 h-4" />
               Import
             </Link>
+            <Link
+              to="/clubs"
+              className={`text-[13px] font-medium transition-all duration-300 hover:scale-105 ${
+                isActive('/clubs')
+                  ? 'text-gray-900 dark:text-white shadow-sm'
+                  : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+              }`}
+            >
+              Clubs
+            </Link>
           </nav>
 
           {/* Search with glassmorphism */}
