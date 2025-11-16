@@ -1,11 +1,34 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Search, HelpCircle, Bell, LogOut } from 'lucide-react';
+import { Search, HelpCircle, Bell, LogOut, Moon, Sun, Timer, TrendingUp, Trophy, Upload } from 'lucide-react';
 import { useApp } from '../../contexts/AppContext';
+import { useState, useEffect } from 'react';
 
 const Header = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, logout } = useApp();
+  const [darkMode, setDarkMode] = useState(false);
+  const [showMenu, setShowMenu] = useState(false);
+
+  useEffect(() => {
+    const isDark = localStorage.getItem('theme') === 'dark';
+    setDarkMode(isDark);
+    if (isDark) {
+      document.documentElement.classList.add('dark');
+    }
+  }, []);
+
+  const toggleDarkMode = () => {
+    const newMode = !darkMode;
+    setDarkMode(newMode);
+    if (newMode) {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    }
+  };
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -26,46 +49,80 @@ const Header = () => {
           </Link>
 
           {/* Navigation with hover effects */}
-          <nav className="hidden md:flex items-center space-x-8">
+          <nav className="hidden lg:flex items-center space-x-6">
             <Link
               to="/"
-              className={`text-[14px] font-medium transition-all duration-300 hover:scale-105 ${
+              className={`text-[13px] font-medium transition-all duration-300 hover:scale-105 ${
                 isActive('/')
-                  ? 'text-gray-900 shadow-sm'
-                  : 'text-gray-600 hover:text-gray-900'
+                  ? 'text-gray-900 dark:text-white shadow-sm'
+                  : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
               }`}
             >
               Home
             </Link>
             <Link
               to="/my-books"
-              className={`text-[14px] font-medium transition-all duration-300 hover:scale-105 ${
+              className={`text-[13px] font-medium transition-all duration-300 hover:scale-105 ${
                 isActive('/my-books')
-                  ? 'text-gray-900 shadow-sm'
-                  : 'text-gray-600 hover:text-gray-900'
+                  ? 'text-gray-900 dark:text-white shadow-sm'
+                  : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
               }`}
             >
               My Books
             </Link>
             <Link
               to="/browse"
-              className={`text-[14px] font-medium transition-all duration-300 hover:scale-105 ${
+              className={`text-[13px] font-medium transition-all duration-300 hover:scale-105 ${
                 isActive('/browse')
-                  ? 'text-gray-900 shadow-sm'
-                  : 'text-gray-600 hover:text-gray-900'
+                  ? 'text-gray-900 dark:text-white shadow-sm'
+                  : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
               }`}
             >
               Browse
             </Link>
             <Link
-              to="/community"
-              className={`text-[14px] font-medium transition-all duration-300 hover:scale-105 ${
-                isActive('/community')
-                  ? 'text-gray-900 shadow-sm'
-                  : 'text-gray-600 hover:text-gray-900'
+              to="/timer"
+              className={`flex items-center gap-1 text-[13px] font-medium transition-all duration-300 hover:scale-105 ${
+                isActive('/timer')
+                  ? 'text-emerald-600 dark:text-emerald-400 shadow-sm'
+                  : 'text-gray-600 dark:text-gray-400 hover:text-emerald-600 dark:hover:text-emerald-400'
               }`}
             >
-              Community
+              <Timer className="w-4 h-4" />
+              Timer
+            </Link>
+            <Link
+              to="/analytics"
+              className={`flex items-center gap-1 text-[13px] font-medium transition-all duration-300 hover:scale-105 ${
+                isActive('/analytics')
+                  ? 'text-blue-600 dark:text-blue-400 shadow-sm'
+                  : 'text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400'
+              }`}
+            >
+              <TrendingUp className="w-4 h-4" />
+              Analytics
+            </Link>
+            <Link
+              to="/achievements"
+              className={`flex items-center gap-1 text-[13px] font-medium transition-all duration-300 hover:scale-105 ${
+                isActive('/achievements')
+                  ? 'text-yellow-600 dark:text-yellow-400 shadow-sm'
+                  : 'text-gray-600 dark:text-gray-400 hover:text-yellow-600 dark:hover:text-yellow-400'
+              }`}
+            >
+              <Trophy className="w-4 h-4" />
+              Achievements
+            </Link>
+            <Link
+              to="/import"
+              className={`flex items-center gap-1 text-[13px] font-medium transition-all duration-300 hover:scale-105 ${
+                isActive('/import')
+                  ? 'text-purple-600 dark:text-purple-400 shadow-sm'
+                  : 'text-gray-600 dark:text-gray-400 hover:text-purple-600 dark:hover:text-purple-400'
+              }`}
+            >
+              <Upload className="w-4 h-4" />
+              Import
             </Link>
           </nav>
 
@@ -85,10 +142,19 @@ const Header = () => {
 
           {/* Right side icons with 3D effects */}
           <div className="flex items-center space-x-3">
-            <button className="p-2 text-gray-600 hover:text-gray-900 rounded-full hover:bg-white/50 transition-all duration-300 hover:scale-110 hover:shadow-3d">
+            {/* Dark Mode Toggle */}
+            <button
+              onClick={toggleDarkMode}
+              className="p-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white rounded-full hover:bg-white/50 dark:hover:bg-gray-700/50 transition-all duration-300 hover:scale-110 hover:shadow-3d"
+              title={darkMode ? 'Light Mode' : 'Dark Mode'}
+            >
+              {darkMode ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+            </button>
+            
+            <button className="p-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white rounded-full hover:bg-white/50 dark:hover:bg-gray-700/50 transition-all duration-300 hover:scale-110 hover:shadow-3d">
               <HelpCircle className="h-5 w-5" />
             </button>
-            <button className="p-2 text-gray-600 hover:text-gray-900 relative rounded-full hover:bg-white/50 transition-all duration-300 hover:scale-110 hover:shadow-3d">
+            <button className="p-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white relative rounded-full hover:bg-white/50 dark:hover:bg-gray-700/50 transition-all duration-300 hover:scale-110 hover:shadow-3d">
               <Bell className="h-5 w-5" />
               <span className="absolute -top-1 -right-1 h-4 w-4 bg-red-500 rounded-full flex items-center justify-center text-[10px] text-white font-medium animate-pulse shadow-3d">
                 3

@@ -22,7 +22,7 @@ const readingProgressSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ['want-to-read', 'currently-reading', 'finished'],
+    enum: ['want-to-read', 'currently-reading', 'finished', 'dnf', 'paused'],
     default: 'want-to-read'
   },
   startDate: {
@@ -30,7 +30,69 @@ const readingProgressSchema = new mongoose.Schema({
   },
   finishDate: {
     type: Date
-  }
+  },
+  
+  // Rating with half-star support
+  rating: {
+    type: Number,
+    min: 0,
+    max: 5,
+    default: 0,
+    // Validate to ensure only 0.5 increments
+    validate: {
+      validator: function(v) {
+        return v === 0 || (v >= 0.5 && v <= 5 && v % 0.5 === 0);
+      },
+      message: 'Rating must be in 0.5 increments (0.5, 1, 1.5, ... 5)'
+    }
+  },
+  
+  // Review
+  review: {
+    type: String,
+    maxlength: 5000
+  },
+  
+  // DNF specific fields
+  dnfReason: {
+    type: String,
+    maxlength: 1000
+  },
+  dnfPage: {
+    type: Number,
+    min: 0
+  },
+  dnfDate: {
+    type: Date
+  },
+  
+  // Reading sessions tracking
+  readingSessions: [{
+    date: { type: Date, default: Date.now },
+    durationMinutes: Number,
+    pagesRead: Number,
+    mood: String
+  }],
+  
+  // Mood tags
+  moodTags: [String],
+  
+  // Ownership
+  isOwned: {
+    type: Boolean,
+    default: false
+  },
+  format: {
+    type: String,
+    enum: ['physical', 'ebook', 'audiobook'],
+    default: 'physical'
+  },
+  
+  // Paused specific
+  pausedDate: {
+    type: Date
+  },
+  pauseReason: String
 }, {
   timestamps: true
 });

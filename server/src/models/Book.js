@@ -15,11 +15,18 @@ const bookSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Author'
   },
-  isbn: {
-    type: String,
-    unique: true,
-    sparse: true
+  
+  // Metadata
+  metadata: {
+    isbn13: String,
+    isbn10: String,
+    isbn: String, // Primary ISBN
+    googleBooksId: String,
+    goodreadsId: String,
+    openLibraryId: String
   },
+  
+  // Content info
   description: {
     type: String,
     default: ''
@@ -32,6 +39,8 @@ const bookSchema = new mongoose.Schema({
     type: Number,
     default: 0
   },
+  wordCount: Number,
+  readingTime: Number, // average minutes
   publishedDate: {
     type: Date
   },
@@ -43,9 +52,21 @@ const bookSchema = new mongoose.Schema({
     type: String,
     default: 'English'
   },
-  genres: [{
-    type: String
-  }],
+  format: {
+    type: String,
+    enum: ['hardcover', 'paperback', 'ebook', 'audiobook', 'other'],
+    default: 'paperback'
+  },
+  
+  // Classification
+  genres: [String],
+  themes: [String],
+  tags: [String],
+  moods: [String],
+  settings: [String],
+  contentWarnings: [String],
+  
+  // Ratings
   averageRating: {
     type: Number,
     default: 0,
@@ -56,13 +77,54 @@ const bookSchema = new mongoose.Schema({
     type: Number,
     default: 0
   },
+  ratingDistribution: {
+    1: { type: Number, default: 0 },
+    2: { type: Number, default: 0 },
+    3: { type: Number, default: 0 },
+    4: { type: Number, default: 0 },
+    5: { type: Number, default: 0 }
+  },
   reviewsCount: {
     type: Number,
     default: 0
   },
+  
+  // Stats
+  stats: {
+    totalReads: { type: Number, default: 0 },
+    currentlyReading: { type: Number, default: 0 },
+    wantToRead: { type: Number, default: 0 },
+    finishedReading: { type: Number, default: 0 },
+    averageReadingTime: Number,
+    popularityScore: { type: Number, default: 0 },
+    trendingScore: { type: Number, default: 0 }
+  },
+  
+  // Awards
+  awards: [{
+    name: String,
+    year: Number,
+    category: String,
+    won: Boolean
+  }],
+  
+  // External links
+  externalLinks: {
+    amazonUrl: String,
+    goodreadsUrl: String,
+    audibleUrl: String,
+    kindleUrl: String
+  },
+  
   addedBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
+  },
+  
+  // Legacy field for backward compatibility
+  isbn: {
+    type: String,
+    sparse: true
   }
 }, {
   timestamps: true
