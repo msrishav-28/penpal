@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Play, Pause, Square, Music, BookOpen, Clock } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Play, Pause, Square, Music, BookOpen, Clock, Sparkles } from 'lucide-react';
 import { startSession, pauseSession, resumeSession, endSession, tick, setAmbientSound } from '../store/slices/sessionSlice';
 import type { RootState } from '../store';
+import { TextReveal } from '../components/ui';
 
 const AMBIENT_SOUNDS = [
   { id: 'none', name: 'None', icon: '🔇' },
@@ -10,8 +12,7 @@ const AMBIENT_SOUNDS = [
   { id: 'cafe', name: 'Café', icon: '☕' },
   { id: 'nature', name: 'Nature', icon: '🌿' },
   { id: 'fireplace', name: 'Fireplace', icon: '🔥' },
-  { id: 'ocean', name: 'Ocean', icon: '🌊' },
-  { id: 'white-noise', name: 'White Noise', icon: '📻' }
+  { id: 'ocean', name: 'Ocean', icon: '🌊' }
 ];
 
 const MOODS = [
@@ -26,18 +27,15 @@ const MOODS = [
 export default function ReadingTimer() {
   const dispatch = useDispatch();
   const { activeSession, isTimerRunning, elapsedSeconds } = useSelector((state: RootState) => state.session);
-  
+
   const [selectedBook, setSelectedBook] = useState('');
   const [selectedMood, setSelectedMood] = useState('focused');
   const [pagesRead, setPagesRead] = useState(0);
 
-  // Timer tick effect
   useEffect(() => {
     let interval: NodeJS.Timeout;
     if (isTimerRunning) {
-      interval = setInterval(() => {
-        dispatch(tick());
-      }, 1000);
+      interval = setInterval(() => dispatch(tick()), 1000);
     }
     return () => clearInterval(interval);
   }, [isTimerRunning, dispatch]);
@@ -50,219 +48,112 @@ export default function ReadingTimer() {
   };
 
   const handleStart = () => {
-    if (!selectedBook) {
-      alert('Please select a book first');
-      return;
-    }
-    dispatch(startSession({
-      bookId: selectedBook,
-      mood: selectedMood,
-      ambientSound: 'none'
-    }));
+    if (!selectedBook) { alert('Please select a book first'); return; }
+    dispatch(startSession({ bookId: selectedBook, mood: selectedMood, ambientSound: 'none' }));
   };
 
-  const handlePause = () => {
-    dispatch(pauseSession());
-  };
-
-  const handleResume = () => {
-    dispatch(resumeSession());
-  };
-
-  const handleEnd = () => {
-    dispatch(endSession({ pagesRead }));
-    setPagesRead(0);
-  };
-
-  const handleSoundChange = (soundId: string) => {
-    dispatch(setAmbientSound(soundId));
-  };
+  const handleEnd = () => { dispatch(endSession({ pagesRead })); setPagesRead(0); };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 py-8">
-      <div className="container mx-auto px-4 max-w-6xl">
-        {/* Header */}
+    <div className="max-w-6xl mx-auto px-4 py-8">
+      <motion.div className="text-center mb-8" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+        <div className="flex items-center justify-center gap-3 mb-2">
+          <Clock className="w-8 h-8 text-accent-violet" />
+          <TextReveal as="h1" className="text-display-lg font-display text-text-primary">Reading Timer</TextReveal>
+        </div>
+        <p className="text-text-secondary">Track your reading sessions and build consistent habits</p>
+      </motion.div>
+
+      {/* Main Timer Card */}
+      <motion.div className="glass-card p-8 mb-8" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
-            Reading Timer
-          </h1>
-          <p className="text-gray-600 dark:text-gray-400">
-            Track your reading sessions and build consistent habits
-          </p>
+          <motion.div
+            className="inline-flex items-center justify-center w-64 h-64 rounded-full bg-gradient-to-br from-accent-violet to-accent-fuchsia shadow-glow-lg mb-6"
+            animate={{ boxShadow: isTimerRunning ? ['0 0 30px rgba(139,92,246,0.5)', '0 0 60px rgba(217,70,239,0.5)', '0 0 30px rgba(139,92,246,0.5)'] : '0 0 30px rgba(139,92,246,0.3)' }}
+            transition={{ duration: 2, repeat: isTimerRunning ? Infinity : 0 }}
+          >
+            <div className="text-6xl font-display font-bold text-white">{formatTime(elapsedSeconds)}</div>
+          </motion.div>
+          <div className="flex items-center justify-center gap-2 text-xl text-text-secondary">
+            <Sparkles className="w-6 h-6 text-accent-violet" />
+            <span>{activeSession ? 'Session Active' : 'Ready to Read'}</span>
+          </div>
         </div>
 
-        {/* Main Timer Card */}
-        <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-3xl shadow-2xl p-8 mb-8 border border-gray-200/50 dark:border-gray-700/50">
-          {/* Timer Display */}
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-64 h-64 rounded-full bg-gradient-to-br from-emerald-400 to-blue-500 shadow-2xl mb-6">
-              <div className="text-7xl font-bold text-white">
-                {formatTime(elapsedSeconds)}
-              </div>
-            </div>
-            
-            <div className="flex items-center justify-center gap-2 text-xl text-gray-700 dark:text-gray-300">
-              <Clock className="w-6 h-6" />
-              <span>{activeSession ? 'Session Active' : 'No Active Session'}</span>
-            </div>
-          </div>
-
-          {/* Controls */}
-          <div className="flex items-center justify-center gap-4 mb-8">
-            {!activeSession ? (
-              <button
-                onClick={handleStart}
-                className="flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white rounded-2xl font-semibold shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
-              >
-                <Play className="w-6 h-6" />
-                Start Reading
-              </button>
-            ) : (
-              <>
-                {isTimerRunning ? (
-                  <button
-                    onClick={handlePause}
-                    className="flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white rounded-2xl font-semibold shadow-lg hover:shadow-xl transition-all"
-                  >
-                    <Pause className="w-6 h-6" />
-                    Pause
-                  </button>
-                ) : (
-                  <button
-                    onClick={handleResume}
-                    className="flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-2xl font-semibold shadow-lg hover:shadow-xl transition-all"
-                  >
-                    <Play className="w-6 h-6" />
-                    Resume
-                  </button>
-                )}
-                
-                <button
-                  onClick={handleEnd}
-                  className="flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-2xl font-semibold shadow-lg hover:shadow-xl transition-all"
-                >
-                  <Square className="w-6 h-6" />
-                  End Session
-                </button>
-              </>
-            )}
-          </div>
-
-          {/* Pages Read Input */}
-          {activeSession && (
-            <div className="max-w-md mx-auto">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Pages Read This Session
-              </label>
-              <input
-                type="number"
-                value={pagesRead}
-                onChange={(e) => setPagesRead(parseInt(e.target.value) || 0)}
-                className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-                placeholder="0"
-                min="0"
-              />
-            </div>
+        <div className="flex items-center justify-center gap-4 mb-8">
+          {!activeSession ? (
+            <motion.button onClick={handleStart} className="flex items-center gap-2 px-8 py-4 btn-holographic rounded-element font-semibold" whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+              <Play className="w-6 h-6" />Start Reading
+            </motion.button>
+          ) : (
+            <>
+              {isTimerRunning ? (
+                <motion.button onClick={() => dispatch(pauseSession())} className="flex items-center gap-2 px-8 py-4 glass-button rounded-element font-semibold" whileHover={{ scale: 1.02 }}>
+                  <Pause className="w-6 h-6" />Pause
+                </motion.button>
+              ) : (
+                <motion.button onClick={() => dispatch(resumeSession())} className="flex items-center gap-2 px-8 py-4 btn-holographic rounded-element font-semibold" whileHover={{ scale: 1.02 }}>
+                  <Play className="w-6 h-6" />Resume
+                </motion.button>
+              )}
+              <motion.button onClick={handleEnd} className="flex items-center gap-2 px-8 py-4 glass-button border-accent-fuchsia/50 rounded-element font-semibold" whileHover={{ scale: 1.02 }}>
+                <Square className="w-6 h-6" />End
+              </motion.button>
+            </>
           )}
         </div>
 
-        {/* Setup Section (when no active session) */}
-        {!activeSession && (
-          <div className="grid md:grid-cols-2 gap-6 mb-8">
-            {/* Book Selection */}
-            <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl shadow-xl p-6 border border-gray-200/50 dark:border-gray-700/50">
-              <div className="flex items-center gap-2 mb-4">
-                <BookOpen className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                  Select Book
-                </h3>
-              </div>
-              <select
-                value={selectedBook}
-                onChange={(e) => setSelectedBook(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-              >
-                <option value="">Choose a book...</option>
-                <option value="book1">Currently Reading Book 1</option>
-                <option value="book2">Currently Reading Book 2</option>
-              </select>
-            </div>
-
-            {/* Mood Selection */}
-            <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl shadow-xl p-6 border border-gray-200/50 dark:border-gray-700/50">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                Reading Mood
-              </h3>
-              <div className="grid grid-cols-3 gap-2">
-                {MOODS.map((mood) => (
-                  <button
-                    key={mood.id}
-                    onClick={() => setSelectedMood(mood.id)}
-                    className={`p-3 rounded-xl border-2 transition-all ${
-                      selectedMood === mood.id
-                        ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20'
-                        : 'border-gray-200 dark:border-gray-700 hover:border-emerald-300'
-                    }`}
-                  >
-                    <div className="text-2xl mb-1">{mood.icon}</div>
-                    <div className="text-xs font-medium text-gray-700 dark:text-gray-300">
-                      {mood.name}
-                    </div>
-                  </button>
-                ))}
-              </div>
-            </div>
+        {activeSession && (
+          <div className="max-w-md mx-auto">
+            <label className="block text-sm font-medium text-text-secondary mb-2">Pages Read</label>
+            <input type="number" value={pagesRead} onChange={(e) => setPagesRead(parseInt(e.target.value) || 0)} className="input-ethereal w-full" placeholder="0" min="0" />
           </div>
         )}
+      </motion.div>
 
-        {/* Ambient Sounds */}
-        <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl shadow-xl p-6 border border-gray-200/50 dark:border-gray-700/50">
-          <div className="flex items-center gap-2 mb-4">
-            <Music className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-              Ambient Sounds
-            </h3>
-          </div>
-          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3">
-            {AMBIENT_SOUNDS.map((sound) => (
-              <button
-                key={sound.id}
-                onClick={() => handleSoundChange(sound.id)}
-                disabled={!activeSession}
-                className={`p-4 rounded-xl border-2 transition-all ${
-                  activeSession?.ambientSound === sound.id
-                    ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20'
-                    : 'border-gray-200 dark:border-gray-700 hover:border-emerald-300'
-                } ${!activeSession ? 'opacity-50 cursor-not-allowed' : ''}`}
-              >
-                <div className="text-3xl mb-2">{sound.icon}</div>
-                <div className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  {sound.name}
-                </div>
-              </button>
-            ))}
-          </div>
+      {!activeSession && (
+        <div className="grid md:grid-cols-2 gap-6 mb-8">
+          <motion.div className="glass-card p-6" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
+            <div className="flex items-center gap-2 mb-4"><BookOpen className="w-5 h-5 text-accent-violet" /><h3 className="text-lg font-semibold text-text-primary">Select Book</h3></div>
+            <select value={selectedBook} onChange={(e) => setSelectedBook(e.target.value)} className="input-ethereal w-full">
+              <option value="">Choose a book...</option>
+              <option value="book1">Currently Reading Book 1</option>
+              <option value="book2">Currently Reading Book 2</option>
+            </select>
+          </motion.div>
+          <motion.div className="glass-card p-6" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
+            <h3 className="text-lg font-semibold text-text-primary mb-4">Reading Mood</h3>
+            <div className="grid grid-cols-3 gap-2">
+              {MOODS.map((mood) => (
+                <motion.button key={mood.id} onClick={() => setSelectedMood(mood.id)} className={`p-3 rounded-element border-2 transition-all ${selectedMood === mood.id ? 'border-accent-violet bg-accent-violet/10' : 'border-glass-border hover:border-accent-violet/50'}`} whileHover={{ scale: 1.02 }}>
+                  <div className="text-2xl mb-1">{mood.icon}</div>
+                  <div className="text-xs font-medium text-text-secondary">{mood.name}</div>
+                </motion.button>
+              ))}
+            </div>
+          </motion.div>
         </div>
+      )}
 
-        {/* Quick Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
-          <div className="bg-white/60 dark:bg-gray-800/60 backdrop-blur-xl rounded-xl p-4 text-center border border-gray-200/50 dark:border-gray-700/50">
-            <div className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">0</div>
-            <div className="text-sm text-gray-600 dark:text-gray-400">Today</div>
-          </div>
-          <div className="bg-white/60 dark:bg-gray-800/60 backdrop-blur-xl rounded-xl p-4 text-center border border-gray-200/50 dark:border-gray-700/50">
-            <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">0</div>
-            <div className="text-sm text-gray-600 dark:text-gray-400">This Week</div>
-          </div>
-          <div className="bg-white/60 dark:bg-gray-800/60 backdrop-blur-xl rounded-xl p-4 text-center border border-gray-200/50 dark:border-gray-700/50">
-            <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">0</div>
-            <div className="text-sm text-gray-600 dark:text-gray-400">This Month</div>
-          </div>
-          <div className="bg-white/60 dark:bg-gray-800/60 backdrop-blur-xl rounded-xl p-4 text-center border border-gray-200/50 dark:border-gray-700/50">
-            <div className="text-2xl font-bold text-pink-600 dark:text-pink-400">0h</div>
-            <div className="text-sm text-gray-600 dark:text-gray-400">Total Time</div>
-          </div>
+      <motion.div className="glass-card p-6" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
+        <div className="flex items-center gap-2 mb-4"><Music className="w-5 h-5 text-accent-fuchsia" /><h3 className="text-lg font-semibold text-text-primary">Ambient Sounds</h3></div>
+        <div className="grid grid-cols-3 sm:grid-cols-6 gap-3">
+          {AMBIENT_SOUNDS.map((sound) => (
+            <motion.button key={sound.id} onClick={() => activeSession && dispatch(setAmbientSound(sound.id))} disabled={!activeSession} className={`p-4 rounded-element border-2 transition-all ${activeSession?.ambientSound === sound.id ? 'border-accent-violet bg-accent-violet/10' : 'border-glass-border'} ${!activeSession ? 'opacity-50' : 'hover:border-accent-violet/50'}`} whileHover={activeSession ? { scale: 1.02 } : {}}>
+              <div className="text-3xl mb-2">{sound.icon}</div>
+              <div className="text-sm font-medium text-text-secondary">{sound.name}</div>
+            </motion.button>
+          ))}
         </div>
+      </motion.div>
+
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
+        {[{ label: 'Today', value: '0', color: 'accent-violet' }, { label: 'This Week', value: '0', color: 'accent-fuchsia' }, { label: 'This Month', value: '0', color: 'accent-violet' }, { label: 'Total', value: '0h', color: 'accent-gold' }].map((stat, i) => (
+          <motion.div key={stat.label} className="glass-card p-4 text-center" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 + i * 0.1 }}>
+            <div className={`text-2xl font-bold text-${stat.color}`}>{stat.value}</div>
+            <div className="text-sm text-text-tertiary">{stat.label}</div>
+          </motion.div>
+        ))}
       </div>
     </div>
   );

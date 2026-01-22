@@ -1,82 +1,140 @@
 import React from 'react';
+import { motion } from 'framer-motion';
+import { Newspaper, ThumbsUp, MessageCircle, ExternalLink } from 'lucide-react';
 
+/**
+ * NewsSection - Ethereal Archive news and interviews widget
+ * Features dark glass styling with violet accents
+ */
 const NewsSection: React.FC = () => {
+  const newsItems = [
+    {
+      id: 1,
+      title: 'Kristin Hannah Writes an American Epic',
+      image: 'https://images.pexels.com/photos/1029141/pexels-photo-1029141.jpeg?auto=compress&cs=tinysrgb&w=80&h=56&fit=crop',
+      likes: 191,
+      comments: 51
+    }
+  ];
+
+  const quickLinks = [
+    { label: 'Home', href: '/' },
+    { label: 'My Books', href: '/my-books' },
+    { label: 'Browse', href: '/browse' },
+    { label: 'Community', href: '/community' },
+  ];
+
+  const supportLinks = [
+    { label: 'Help Center', href: '#' },
+    { label: 'Contact Us', href: '#' },
+    { label: 'Privacy Policy', href: '#' },
+  ];
+
   return (
-    <div className="glass rounded-card shadow-3d p-6 hover:shadow-3d-hover transition-all duration-300 hover:scale-[1.02] group">
-      <h2 className="text-[18px] font-semibold text-gray-900 mb-4 leading-tight group-hover:text-green-600 transition-colors duration-300">News & Interviews</h2>
-      
-      <div className="space-y-6">
-        <article className="flex space-x-4 p-3 rounded-element hover:bg-white/30 transition-all duration-300 group/article">
-          <img
-            src="https://images.pexels.com/photos/1029141/pexels-photo-1029141.jpeg?auto=compress&cs=tinysrgb&w=80&h=56&fit=crop"
-            alt="News thumbnail"
-            className="w-20 h-14 object-cover rounded-element flex-shrink-0 shadow-3d hover:shadow-3d-hover transition-all duration-300 group-hover/article:scale-105"
-          />
-          <div className="flex-1 min-w-0">
-            <h3 className="font-medium text-gray-900 text-[14px] mb-2 line-clamp-2 leading-tight group-hover/article:text-green-600 transition-colors duration-300">
-              Kristin Hannah Writes an American Epic
-            </h3>
-            <div className="flex items-center space-x-4 text-[11px] text-gray-500">
-              <button className="bg-gray-900 text-white px-2 py-1 rounded-button text-[11px] font-medium hover:bg-gray-800 transition-all duration-300 hover:scale-105 hover:shadow-3d">Read More</button>
-              <div className="flex items-center space-x-2">
-                <span className="hover:scale-110 transition-transform duration-200">👍 191</span>
-                <span className="hover:scale-110 transition-transform duration-200">💬 51</span>
+    <motion.div
+      className="glass-card p-6"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+    >
+      <div className="flex items-center gap-2 mb-4">
+        <Newspaper className="w-5 h-5 text-accent-violet" />
+        <h2 className="text-[18px] font-display font-semibold text-text-primary">
+          News & Interviews
+        </h2>
+      </div>
+
+      {/* News Article */}
+      <div className="space-y-4">
+        {newsItems.map((item) => (
+          <motion.article
+            key={item.id}
+            className="flex space-x-4 p-3 rounded-element bg-white/[0.02] border border-glass-border-subtle hover:border-glass-border transition-all duration-300 group cursor-pointer"
+            whileHover={{ x: 4 }}
+          >
+            <img
+              src={item.image}
+              alt="News thumbnail"
+              className="w-20 h-14 object-cover rounded-element flex-shrink-0 img-ethereal"
+            />
+            <div className="flex-1 min-w-0">
+              <h3 className="font-medium text-text-primary text-[14px] mb-2 line-clamp-2 leading-tight group-hover:text-accent-violet transition-colors duration-300">
+                {item.title}
+              </h3>
+              <div className="flex items-center space-x-4 text-[11px] text-text-tertiary">
+                <motion.button
+                  className="btn-holographic px-2 py-1 rounded-button text-[11px] font-medium flex items-center gap-1"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  Read More
+                  <ExternalLink className="w-3 h-3" />
+                </motion.button>
+                <div className="flex items-center space-x-3">
+                  <span className="flex items-center gap-1 hover:text-accent-fuchsia transition-colors">
+                    <ThumbsUp className="w-3 h-3" /> {item.likes}
+                  </span>
+                  <span className="flex items-center gap-1 hover:text-accent-violet transition-colors">
+                    <MessageCircle className="w-3 h-3" /> {item.comments}
+                  </span>
+                </div>
               </div>
             </div>
-          </div>
-        </article>
+          </motion.article>
+        ))}
       </div>
-      
-      <div className="mt-6 pt-6 border-t border-white/20">
+
+      {/* Quick Links Section */}
+      <div className="mt-6 pt-6 border-t border-glass-border">
         <div className="grid grid-cols-2 gap-4 text-[12px]">
           <div>
-            <h3 className="font-medium text-gray-900 mb-2 text-[14px]">Quick Links</h3>
-            <ul className="space-y-1 text-gray-600">
-              <li><a href="#" className="hover:text-green-600 transition-all duration-300 hover:translate-x-1">Home</a></li>
-              <li><a href="#" className="hover:text-green-600 transition-all duration-300 hover:translate-x-1">My Books</a></li>
-              <li><a href="#" className="hover:text-green-600 transition-all duration-300 hover:translate-x-1">Browse</a></li>
-              <li><a href="#" className="hover:text-green-600 transition-all duration-300 hover:translate-x-1">Community</a></li>
-              <li><a href="#" className="hover:text-green-600 transition-all duration-300 hover:translate-x-1">Profile</a></li>
+            <h3 className="font-display font-medium text-text-primary mb-2 text-[14px]">Quick Links</h3>
+            <ul className="space-y-1.5">
+              {quickLinks.map((link) => (
+                <li key={link.label}>
+                  <a
+                    href={link.href}
+                    className="text-text-secondary hover:text-accent-violet transition-all duration-300 flex items-center gap-1 group"
+                  >
+                    <span className="group-hover:translate-x-1 transition-transform duration-300">{link.label}</span>
+                  </a>
+                </li>
+              ))}
             </ul>
           </div>
-          
+
           <div>
-            <h3 className="font-medium text-gray-900 mb-2 text-[14px]">Support</h3>
-            <ul className="space-y-1 text-gray-600">
-              <li><a href="#" className="hover:text-green-600 transition-all duration-300 hover:translate-x-1">Help Center</a></li>
-              <li><a href="#" className="hover:text-green-600 transition-all duration-300 hover:translate-x-1">Contact Us</a></li>
-              <li><a href="#" className="hover:text-green-600 transition-all duration-300 hover:translate-x-1">FAQs</a></li>
-              <li><a href="#" className="hover:text-green-600 transition-all duration-300 hover:translate-x-1">Privacy Policy</a></li>
-              <li><a href="#" className="hover:text-green-600 transition-all duration-300 hover:translate-x-1">Terms of Service</a></li>
+            <h3 className="font-display font-medium text-text-primary mb-2 text-[14px]">Support</h3>
+            <ul className="space-y-1.5">
+              {supportLinks.map((link) => (
+                <li key={link.label}>
+                  <a
+                    href={link.href}
+                    className="text-text-secondary hover:text-accent-violet transition-all duration-300 flex items-center gap-1 group"
+                  >
+                    <span className="group-hover:translate-x-1 transition-transform duration-300">{link.label}</span>
+                  </a>
+                </li>
+              ))}
             </ul>
           </div>
         </div>
-        
-        <div className="mt-6 pt-4 border-t border-white/20">
-          <p className="text-[11px] text-gray-600 mb-3 leading-relaxed">
-            Connect with millions of readers and share your passion for books.
+
+        {/* Join CTA */}
+        <div className="mt-6 pt-4 border-t border-glass-border">
+          <p className="text-[11px] text-text-tertiary mb-3 leading-relaxed">
+            Connect with passionate readers and explore the archive.
           </p>
-          <button className="w-full bg-gray-900 text-white py-2 px-4 rounded-button text-[12px] font-medium hover:bg-gray-800 transition-all duration-300 hover:scale-105 hover:shadow-3d">
-            Join The Community
-          </button>
-        </div>
-        
-        <div className="mt-4">
-          <h4 className="text-[12px] font-medium text-gray-900 mb-2">Download Goodreads App</h4>
-          <div className="flex space-x-2">
-            <div className="w-8 h-6 bg-black rounded-element flex items-center justify-center hover:scale-110 transition-transform duration-300 shadow-3d hover:shadow-3d-hover">
-              <span className="text-white text-[10px]">▶</span>
-            </div>
-            <div className="w-8 h-6 bg-blue-600 rounded-element flex items-center justify-center hover:scale-110 transition-transform duration-300 shadow-3d hover:shadow-3d-hover">
-              <span className="text-white text-[10px]">f</span>
-            </div>
-            <div className="w-8 h-6 bg-blue-500 rounded-element flex items-center justify-center hover:scale-110 transition-transform duration-300 shadow-3d hover:shadow-3d-hover">
-              <span className="text-white text-[10px]">⊞</span>
-            </div>
-          </div>
+          <motion.button
+            className="w-full btn-holographic py-2 px-4 rounded-element text-[12px] font-medium"
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+          >
+            Join The Archive
+          </motion.button>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

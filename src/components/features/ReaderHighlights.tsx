@@ -1,11 +1,16 @@
 import React from 'react';
 import { ChevronRight, Plus } from 'lucide-react';
+import { motion } from 'framer-motion';
 
+/**
+ * ReaderHighlights - Ethereal Archive story highlights
+ * Features glass avatars with holographic borders and smooth animations
+ */
 const ReaderHighlights: React.FC = () => {
   const highlights = [
     {
       id: 1,
-      name: 'Create Story',
+      name: 'Share Story',
       avatar: 'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=64&h=64&fit=crop',
       isCreateStory: true
     },
@@ -32,35 +37,61 @@ const ReaderHighlights: React.FC = () => {
   ];
 
   return (
-    <div className="glass rounded-card shadow-3d p-6 hover:shadow-3d-hover transition-all duration-300 hover:scale-[1.02] group">
-      <h2 className="text-[18px] font-semibold text-gray-900 mb-4 leading-tight group-hover:text-green-600 transition-colors duration-300">Reader Highlights</h2>
-      
-      <div className="flex space-x-4 overflow-x-auto pb-2">
-        {highlights.map((highlight) => (
-          <div key={highlight.id} className="flex-shrink-0 text-center group/item">
+    <motion.div
+      className="glass-card p-6"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+    >
+      <h2 className="text-[18px] font-display font-semibold text-text-primary mb-4">
+        Reader Highlights
+      </h2>
+
+      <div className="flex space-x-4 overflow-x-auto pb-2 scrollbar-hide">
+        {highlights.map((highlight, index) => (
+          <motion.div
+            key={highlight.id}
+            className="flex-shrink-0 text-center group cursor-pointer"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: index * 0.1, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+            whileHover={{ y: -4 }}
+          >
             <div className="relative mb-2">
+              {/* Holographic ring */}
+              <div className="absolute -inset-1 rounded-full bg-gradient-holographic opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-sm" />
+
               <img
                 src={highlight.avatar}
                 alt={highlight.name}
-                className="w-16 h-16 rounded-full object-cover shadow-3d hover:shadow-3d-hover transition-all duration-300 group-hover/item:scale-110"
+                className="w-16 h-16 rounded-full object-cover relative z-10 border-2 border-glass-border group-hover:border-accent-violet/50 transition-all duration-300 img-ethereal"
               />
+
               {highlight.isCreateStory && (
-                <div className="absolute -bottom-1 -right-1 bg-green-600 rounded-full p-1 shadow-3d hover:shadow-3d-hover transition-all duration-300 hover:scale-110 animate-pulse">
+                <motion.div
+                  className="absolute -bottom-1 -right-1 bg-gradient-holographic rounded-full p-1.5 shadow-glow-sm z-20"
+                  whileHover={{ scale: 1.2 }}
+                >
                   <Plus className="h-3 w-3 text-white" />
-                </div>
+                </motion.div>
               )}
-              {/* Glow effect on hover */}
-              <div className="absolute inset-0 rounded-full bg-gradient-to-r from-green-400/20 to-blue-400/20 opacity-0 group-hover/item:opacity-100 transition-opacity duration-300"></div>
             </div>
-            <p className="text-[11px] text-gray-600 font-medium max-w-[64px] truncate group-hover/item:text-green-600 transition-colors duration-300">{highlight.name}</p>
-          </div>
+            <p className="text-[11px] text-text-secondary font-medium max-w-[64px] truncate group-hover:text-text-primary transition-colors duration-300">
+              {highlight.name}
+            </p>
+          </motion.div>
         ))}
-        
-        <button className="flex-shrink-0 flex items-center justify-center w-16 h-16 glass-dark rounded-full hover:bg-white/30 transition-all duration-300 hover:scale-110 hover:shadow-3d group/btn">
-          <ChevronRight className="h-5 w-5 text-gray-600 group-hover/btn:text-green-600 transition-colors duration-300" />
-        </button>
+
+        {/* See More Button */}
+        <motion.button
+          className="flex-shrink-0 flex items-center justify-center w-16 h-16 glass-button rounded-full"
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          <ChevronRight className="h-5 w-5 text-text-secondary" />
+        </motion.button>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

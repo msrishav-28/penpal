@@ -1,9 +1,11 @@
+import { motion } from 'framer-motion';
 import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { Book, Clock, TrendingUp, Target, Award, Calendar } from 'lucide-react';
+import { Book, Clock, TrendingUp, Target, Award, Calendar, Sparkles } from 'lucide-react';
+import { TextReveal } from '../components/ui';
 
-const COLORS = ['#10b981', '#3b82f6', '#8b5cf6', '#ec4899', '#f59e0b', '#ef4444'];
+// Ethereal Archive color palette for charts
+const COLORS = ['#8B5CF6', '#D946EF', '#FFD700', '#06B6D4', '#EC4899', '#10B981'];
 
-// Mock data - replace with real data from Redux/API
 const monthlyData = [
   { month: 'Jan', books: 4, pages: 1200, hours: 24 },
   { month: 'Feb', books: 3, pages: 950, hours: 19 },
@@ -31,195 +33,216 @@ const readingStreak = [
   { day: 'Sun', pages: 55 }
 ];
 
+/**
+ * Analytics - Ethereal Archive reading statistics page
+ * Features dark glass cards with violet gradients and animated charts
+ */
 export default function Analytics() {
+  const stats = [
+    { icon: Book, label: 'Books Read', value: '29', sublabel: 'This Year', change: '+12%', gradient: 'from-accent-violet to-accent-fuchsia' },
+    { icon: Clock, label: 'Reading Time', value: '173h', sublabel: 'Total', change: '29 min/day', gradient: 'from-accent-fuchsia to-accent-violet' },
+    { icon: Target, label: 'Days Active', value: '15', sublabel: 'Streak', change: 'Best: 32', gradient: 'from-accent-violet to-accent-gold' },
+    { icon: Calendar, label: 'Pages Read', value: '8,750', sublabel: '2024', change: '302/book', gradient: 'from-accent-fuchsia to-accent-gold' },
+  ];
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 py-8">
-      <div className="container mx-auto px-4 max-w-7xl">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
-            📊 Reading Analytics
-          </h1>
-          <p className="text-gray-600 dark:text-gray-400">
-            Track your reading journey and discover insights
-          </p>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {/* Header */}
+      <motion.div
+        className="mb-8"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+      >
+        <div className="flex items-center gap-3 mb-2">
+          <Sparkles className="w-8 h-8 text-accent-violet" />
+          <TextReveal as="h1" className="text-display-lg font-display text-text-primary">
+            Reading Analytics
+          </TextReveal>
         </div>
+        <p className="text-text-secondary">Track your reading journey and discover insights</p>
+      </motion.div>
 
-        {/* Stats Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl p-6 text-white shadow-xl">
-            <div className="flex items-center justify-between mb-4">
-              <Book className="w-8 h-8 opacity-80" />
-              <span className="text-sm font-medium bg-white/20 px-3 py-1 rounded-full">
-                This Year
-              </span>
-            </div>
-            <div className="text-4xl font-bold mb-1">29</div>
-            <div className="text-emerald-100">Books Read</div>
-            <div className="mt-4 flex items-center gap-2 text-sm">
-              <TrendingUp className="w-4 h-4" />
-              <span>+12% from last year</span>
-            </div>
-          </div>
+      {/* Stats Overview */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        {stats.map((stat, index) => {
+          const Icon = stat.icon;
+          return (
+            <motion.div
+              key={stat.label}
+              className={`glass-card bg-gradient-to-br ${stat.gradient} p-6 relative overflow-hidden group`}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1 }}
+              whileHover={{ scale: 1.02 }}
+            >
+              <div className="relative z-10">
+                <div className="flex items-center justify-between mb-4">
+                  <Icon className="w-8 h-8 text-white/80" />
+                  <span className="text-sm font-medium bg-white/20 px-3 py-1 rounded-full text-white">
+                    {stat.sublabel}
+                  </span>
+                </div>
+                <div className="text-4xl font-display font-bold text-white mb-1">{stat.value}</div>
+                <div className="text-white/80">{stat.label}</div>
+                <div className="mt-4 flex items-center gap-2 text-sm text-white/80">
+                  <TrendingUp className="w-4 h-4" />
+                  <span>{stat.change}</span>
+                </div>
+              </div>
+              {/* Glow effect */}
+              <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            </motion.div>
+          );
+        })}
+      </div>
 
-          <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl p-6 text-white shadow-xl">
-            <div className="flex items-center justify-between mb-4">
-              <Clock className="w-8 h-8 opacity-80" />
-              <span className="text-sm font-medium bg-white/20 px-3 py-1 rounded-full">
-                Total
-              </span>
-            </div>
-            <div className="text-4xl font-bold mb-1">173h</div>
-            <div className="text-blue-100">Reading Time</div>
-            <div className="mt-4 flex items-center gap-2 text-sm">
-              <Clock className="w-4 h-4" />
-              <span>Avg 29 min/day</span>
-            </div>
-          </div>
-
-          <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl p-6 text-white shadow-xl">
-            <div className="flex items-center justify-between mb-4">
-              <Target className="w-8 h-8 opacity-80" />
-              <span className="text-sm font-medium bg-white/20 px-3 py-1 rounded-full">
-                Streak
-              </span>
-            </div>
-            <div className="text-4xl font-bold mb-1">15</div>
-            <div className="text-purple-100">Days Active</div>
-            <div className="mt-4 flex items-center gap-2 text-sm">
-              <Award className="w-4 h-4" />
-              <span>Best: 32 days</span>
-            </div>
-          </div>
-
-          <div className="bg-gradient-to-br from-pink-500 to-pink-600 rounded-2xl p-6 text-white shadow-xl">
-            <div className="flex items-center justify-between mb-4">
-              <Calendar className="w-8 h-8 opacity-80" />
-              <span className="text-sm font-medium bg-white/20 px-3 py-1 rounded-full">
-                2024
-              </span>
-            </div>
-            <div className="text-4xl font-bold mb-1">8,750</div>
-            <div className="text-pink-100">Pages Read</div>
-            <div className="mt-4 flex items-center gap-2 text-sm">
-              <TrendingUp className="w-4 h-4" />
-              <span>302 pages/book avg</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Charts Grid */}
-        <div className="grid lg:grid-cols-2 gap-6 mb-8">
-          {/* Monthly Progress */}
-          <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl shadow-xl p-6 border border-gray-200/50 dark:border-gray-700/50">
-            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
-              <TrendingUp className="w-5 h-5 text-emerald-600" />
-              Monthly Reading Progress
-            </h3>
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={monthlyData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                <XAxis dataKey="month" stroke="#6b7280" />
-                <YAxis stroke="#6b7280" />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                    border: 'none',
-                    borderRadius: '12px',
-                    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
-                  }}
-                />
-                <Legend />
-                <Line type="monotone" dataKey="books" stroke="#10b981" strokeWidth={3} name="Books" />
-                <Line type="monotone" dataKey="hours" stroke="#3b82f6" strokeWidth={3} name="Hours" />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-
-          {/* Genre Distribution */}
-          <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl shadow-xl p-6 border border-gray-200/50 dark:border-gray-700/50">
-            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
-              <Book className="w-5 h-5 text-purple-600" />
-              Genre Distribution
-            </h3>
-            <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
-                <Pie
-                  data={genreData}
-                  cx="50%"
-                  cy="50%"
-                  labelLine={false}
-                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                  outerRadius={100}
-                  fill="#8884d8"
-                  dataKey="value"
-                >
-                  {genreData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                  ))}
-                </Pie>
-                <Tooltip />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-
-        {/* Weekly Streak */}
-        <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl shadow-xl p-6 border border-gray-200/50 dark:border-gray-700/50 mb-8">
-          <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
-            <Target className="w-5 h-5 text-blue-600" />
-            This Week's Reading Activity
+      {/* Charts Grid */}
+      <div className="grid lg:grid-cols-2 gap-6 mb-8">
+        {/* Monthly Progress */}
+        <motion.div
+          className="glass-card p-6"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+        >
+          <h3 className="text-xl font-display font-semibold text-text-primary mb-6 flex items-center gap-2">
+            <TrendingUp className="w-5 h-5 text-accent-violet" />
+            Monthly Reading Progress
           </h3>
           <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={readingStreak}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-              <XAxis dataKey="day" stroke="#6b7280" />
-              <YAxis stroke="#6b7280" />
+            <LineChart data={monthlyData}>
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
+              <XAxis dataKey="month" stroke="#A1A1AA" />
+              <YAxis stroke="#A1A1AA" />
               <Tooltip
                 contentStyle={{
-                  backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                  border: 'none',
+                  backgroundColor: '#0A0C14',
+                  border: '1px solid rgba(255,255,255,0.1)',
                   borderRadius: '12px',
-                  boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
+                  color: '#EDEDED'
                 }}
               />
-              <Bar dataKey="pages" fill="#3b82f6" radius={[8, 8, 0, 0]} />
-            </BarChart>
+              <Legend />
+              <Line type="monotone" dataKey="books" stroke="#8B5CF6" strokeWidth={3} name="Books" dot={{ fill: '#8B5CF6' }} />
+              <Line type="monotone" dataKey="hours" stroke="#D946EF" strokeWidth={3} name="Hours" dot={{ fill: '#D946EF' }} />
+            </LineChart>
           </ResponsiveContainer>
-        </div>
+        </motion.div>
 
-        {/* Reading Heatmap Placeholder */}
-        <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl shadow-xl p-6 border border-gray-200/50 dark:border-gray-700/50">
-          <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
-            <Calendar className="w-5 h-5 text-emerald-600" />
-            Reading Heatmap
+        {/* Genre Distribution */}
+        <motion.div
+          className="glass-card p-6"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
+        >
+          <h3 className="text-xl font-display font-semibold text-text-primary mb-6 flex items-center gap-2">
+            <Book className="w-5 h-5 text-accent-fuchsia" />
+            Genre Distribution
           </h3>
-          <div className="grid grid-cols-7 gap-2">
-            {Array.from({ length: 49 }, (_, i) => (
-              <div
+          <ResponsiveContainer width="100%" height={300}>
+            <PieChart>
+              <Pie
+                data={genreData}
+                cx="50%"
+                cy="50%"
+                labelLine={false}
+                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                outerRadius={100}
+                fill="#8884d8"
+                dataKey="value"
+              >
+                {genreData.map((_, index) => (
+                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                ))}
+              </Pie>
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: '#0A0C14',
+                  border: '1px solid rgba(255,255,255,0.1)',
+                  borderRadius: '12px',
+                  color: '#EDEDED'
+                }}
+              />
+            </PieChart>
+          </ResponsiveContainer>
+        </motion.div>
+      </div>
+
+      {/* Weekly Streak */}
+      <motion.div
+        className="glass-card p-6 mb-8"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.6 }}
+      >
+        <h3 className="text-xl font-display font-semibold text-text-primary mb-6 flex items-center gap-2">
+          <Target className="w-5 h-5 text-accent-gold" />
+          This Week's Reading Activity
+        </h3>
+        <ResponsiveContainer width="100%" height={300}>
+          <BarChart data={readingStreak}>
+            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
+            <XAxis dataKey="day" stroke="#A1A1AA" />
+            <YAxis stroke="#A1A1AA" />
+            <Tooltip
+              contentStyle={{
+                backgroundColor: '#0A0C14',
+                border: '1px solid rgba(255,255,255,0.1)',
+                borderRadius: '12px',
+                color: '#EDEDED'
+              }}
+            />
+            <Bar dataKey="pages" fill="url(#barGradient)" radius={[8, 8, 0, 0]} />
+            <defs>
+              <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#8B5CF6" />
+                <stop offset="100%" stopColor="#D946EF" />
+              </linearGradient>
+            </defs>
+          </BarChart>
+        </ResponsiveContainer>
+      </motion.div>
+
+      {/* Reading Heatmap */}
+      <motion.div
+        className="glass-card p-6"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.7 }}
+      >
+        <h3 className="text-xl font-display font-semibold text-text-primary mb-6 flex items-center gap-2">
+          <Calendar className="w-5 h-5 text-accent-violet" />
+          Reading Heatmap
+        </h3>
+        <div className="grid grid-cols-7 gap-2">
+          {Array.from({ length: 49 }, (_, i) => {
+            const intensity = Math.random();
+            return (
+              <motion.div
                 key={i}
-                className={`aspect-square rounded-lg ${
-                  Math.random() > 0.5
-                    ? 'bg-emerald-500'
-                    : Math.random() > 0.5
-                    ? 'bg-emerald-300'
-                    : 'bg-gray-200 dark:bg-gray-700'
-                }`}
+                className={`aspect-square rounded-lg transition-all duration-300 hover:scale-110 ${intensity > 0.7 ? 'bg-accent-violet' :
+                    intensity > 0.4 ? 'bg-accent-violet/50' :
+                      'bg-white/[0.05]'
+                  }`}
+                initial={{ opacity: 0, scale: 0 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: i * 0.01 }}
                 title={`Day ${i + 1}`}
               />
-            ))}
-          </div>
-          <div className="flex items-center justify-between mt-4 text-sm text-gray-600 dark:text-gray-400">
-            <span>Less</span>
-            <div className="flex gap-1">
-              <div className="w-4 h-4 rounded bg-gray-200 dark:bg-gray-700" />
-              <div className="w-4 h-4 rounded bg-emerald-300" />
-              <div className="w-4 h-4 rounded bg-emerald-500" />
-            </div>
-            <span>More</span>
-          </div>
+            );
+          })}
         </div>
-      </div>
+        <div className="flex items-center justify-between mt-4 text-sm text-text-tertiary">
+          <span>Less</span>
+          <div className="flex gap-1">
+            <div className="w-4 h-4 rounded bg-white/[0.05]" />
+            <div className="w-4 h-4 rounded bg-accent-violet/50" />
+            <div className="w-4 h-4 rounded bg-accent-violet" />
+          </div>
+          <span>More</span>
+        </div>
+      </motion.div>
     </div>
   );
 }

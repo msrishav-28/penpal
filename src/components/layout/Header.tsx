@@ -1,34 +1,18 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Search, HelpCircle, Bell, LogOut, Moon, Sun, Timer, TrendingUp, Trophy, Upload } from 'lucide-react';
+import { Search, HelpCircle, Bell, LogOut, Timer, TrendingUp, Trophy, Upload, BookOpen, Users, Sparkles } from 'lucide-react';
 import { useApp } from '../../contexts/AppContext';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { motion } from 'framer-motion';
 
+/**
+ * Header - Ethereal Archive glass navigation dock
+ * Features frosted glass, holographic accents, and PenPal branding
+ */
 const Header = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, logout } = useApp();
-  const [darkMode, setDarkMode] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
-
-  useEffect(() => {
-    const isDark = localStorage.getItem('theme') === 'dark';
-    setDarkMode(isDark);
-    if (isDark) {
-      document.documentElement.classList.add('dark');
-    }
-  }, []);
-
-  const toggleDarkMode = () => {
-    const newMode = !darkMode;
-    setDarkMode(newMode);
-    if (newMode) {
-      document.documentElement.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-      localStorage.setItem('theme', 'light');
-    }
-  };
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -37,167 +21,137 @@ const Header = () => {
     navigate('/login');
   };
 
+  const navItems = [
+    { path: '/', label: 'Home', icon: null },
+    { path: '/my-books', label: 'My Books', icon: BookOpen },
+    { path: '/browse', label: 'Browse', icon: null },
+    { path: '/timer', label: 'Timer', icon: Timer, accent: true },
+    { path: '/analytics', label: 'Analytics', icon: TrendingUp },
+    { path: '/achievements', label: 'Achievements', icon: Trophy },
+    { path: '/import', label: 'Import', icon: Upload },
+    { path: '/clubs', label: 'Clubs', icon: Users },
+  ];
+
   return (
-    <header className="glass sticky top-0 z-50 border-b border-white/20">
+    <motion.header
+      className="glass-dark sticky top-0 z-50 border-b border-glass-border"
+      initial={{ y: -20, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+    >
       <div className="max-w-[1200px] mx-auto px-6">
         <div className="flex items-center justify-between h-[60px]">
-          {/* Logo with subtle glow */}
+          {/* Logo - PenPal with holographic gradient */}
           <Link to="/" className="flex items-center group">
-            <div className="text-[24px] font-bold text-gray-800 leading-none transition-all duration-300 group-hover:scale-105">
-              good<span className="text-green-600 animate-glow">reads</span>
-            </div>
+            <motion.div
+              className="flex items-center gap-2"
+              whileHover={{ scale: 1.05 }}
+              transition={{ type: 'spring', stiffness: 400, damping: 17 }}
+            >
+              <Sparkles className="w-5 h-5 text-accent-violet" />
+              <span className="text-[24px] font-display font-semibold text-gradient-holographic leading-none">
+                PenPal
+              </span>
+            </motion.div>
           </Link>
 
-          {/* Navigation with hover effects */}
-          <nav className="hidden lg:flex items-center space-x-6">
-            <Link
-              to="/"
-              className={`text-[13px] font-medium transition-all duration-300 hover:scale-105 ${
-                isActive('/')
-                  ? 'text-gray-900 dark:text-white shadow-sm'
-                  : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
-              }`}
-            >
-              Home
-            </Link>
-            <Link
-              to="/my-books"
-              className={`text-[13px] font-medium transition-all duration-300 hover:scale-105 ${
-                isActive('/my-books')
-                  ? 'text-gray-900 dark:text-white shadow-sm'
-                  : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
-              }`}
-            >
-              My Books
-            </Link>
-            <Link
-              to="/browse"
-              className={`text-[13px] font-medium transition-all duration-300 hover:scale-105 ${
-                isActive('/browse')
-                  ? 'text-gray-900 dark:text-white shadow-sm'
-                  : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
-              }`}
-            >
-              Browse
-            </Link>
-            <Link
-              to="/timer"
-              className={`flex items-center gap-1 text-[13px] font-medium transition-all duration-300 hover:scale-105 ${
-                isActive('/timer')
-                  ? 'text-emerald-600 dark:text-emerald-400 shadow-sm'
-                  : 'text-gray-600 dark:text-gray-400 hover:text-emerald-600 dark:hover:text-emerald-400'
-              }`}
-            >
-              <Timer className="w-4 h-4" />
-              Timer
-            </Link>
-            <Link
-              to="/analytics"
-              className={`flex items-center gap-1 text-[13px] font-medium transition-all duration-300 hover:scale-105 ${
-                isActive('/analytics')
-                  ? 'text-blue-600 dark:text-blue-400 shadow-sm'
-                  : 'text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400'
-              }`}
-            >
-              <TrendingUp className="w-4 h-4" />
-              Analytics
-            </Link>
-            <Link
-              to="/achievements"
-              className={`flex items-center gap-1 text-[13px] font-medium transition-all duration-300 hover:scale-105 ${
-                isActive('/achievements')
-                  ? 'text-yellow-600 dark:text-yellow-400 shadow-sm'
-                  : 'text-gray-600 dark:text-gray-400 hover:text-yellow-600 dark:hover:text-yellow-400'
-              }`}
-            >
-              <Trophy className="w-4 h-4" />
-              Achievements
-            </Link>
-            <Link
-              to="/import"
-              className={`flex items-center gap-1 text-[13px] font-medium transition-all duration-300 hover:scale-105 ${
-                isActive('/import')
-                  ? 'text-purple-600 dark:text-purple-400 shadow-sm'
-                  : 'text-gray-600 dark:text-gray-400 hover:text-purple-600 dark:hover:text-purple-400'
-              }`}
-            >
-              <Upload className="w-4 h-4" />
-              Import
-            </Link>
-            <Link
-              to="/clubs"
-              className={`text-[13px] font-medium transition-all duration-300 hover:scale-105 ${
-                isActive('/clubs')
-                  ? 'text-gray-900 dark:text-white shadow-sm'
-                  : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
-              }`}
-            >
-              Clubs
-            </Link>
+          {/* Navigation */}
+          <nav className="hidden lg:flex items-center space-x-1">
+            {navItems.map(({ path, label, icon: Icon, accent }) => (
+              <Link
+                key={path}
+                to={path}
+                className={`flex items-center gap-1.5 px-3 py-2 text-[13px] font-medium rounded-element transition-all duration-300 ${isActive(path)
+                    ? 'text-text-primary bg-white/[0.05] border border-glass-border'
+                    : 'text-text-secondary hover:text-text-primary hover:bg-white/[0.03]'
+                  } ${accent && isActive(path) ? 'text-accent-violet' : ''}`}
+              >
+                {Icon && <Icon className="w-4 h-4" />}
+                {label}
+                {isActive(path) && (
+                  <motion.div
+                    className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-holographic"
+                    layoutId="activeNav"
+                    transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                  />
+                )}
+              </Link>
+            ))}
           </nav>
 
-          {/* Search with glassmorphism */}
-          <div className="flex-1 max-w-[400px] mx-8">
+          {/* Search */}
+          <div className="flex-1 max-w-[300px] mx-6">
             <div className="relative group">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Search className="h-4 w-4 text-gray-400 transition-colors duration-300 group-focus-within:text-green-500" />
+                <Search className="h-4 w-4 text-text-tertiary group-focus-within:text-accent-violet transition-colors duration-300" />
               </div>
               <input
                 type="text"
-                placeholder="Search Books"
-                className="block w-full pl-10 pr-3 py-2 glass rounded-element leading-5 placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-2 focus:ring-green-500/50 focus:border-green-500/50 text-[14px] transition-all duration-300 hover:shadow-3d"
+                placeholder="Search the archive..."
+                className="input-ethereal w-full pl-10 pr-4 py-2 text-[14px]"
               />
             </div>
           </div>
 
-          {/* Right side icons with 3D effects */}
-          <div className="flex items-center space-x-3">
-            {/* Dark Mode Toggle */}
-            <button
-              onClick={toggleDarkMode}
-              className="p-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white rounded-full hover:bg-white/50 dark:hover:bg-gray-700/50 transition-all duration-300 hover:scale-110 hover:shadow-3d"
-              title={darkMode ? 'Light Mode' : 'Dark Mode'}
+          {/* Right side icons */}
+          <div className="flex items-center space-x-2">
+            <motion.button
+              className="p-2 text-text-secondary hover:text-text-primary rounded-element hover:bg-white/[0.05] transition-all duration-300"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
             >
-              {darkMode ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-            </button>
-            
-            <button className="p-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white rounded-full hover:bg-white/50 dark:hover:bg-gray-700/50 transition-all duration-300 hover:scale-110 hover:shadow-3d">
               <HelpCircle className="h-5 w-5" />
-            </button>
-            <button className="p-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white relative rounded-full hover:bg-white/50 dark:hover:bg-gray-700/50 transition-all duration-300 hover:scale-110 hover:shadow-3d">
+            </motion.button>
+
+            <motion.button
+              className="p-2 text-text-secondary hover:text-text-primary relative rounded-element hover:bg-white/[0.05] transition-all duration-300"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
+            >
               <Bell className="h-5 w-5" />
-              <span className="absolute -top-1 -right-1 h-4 w-4 bg-red-500 rounded-full flex items-center justify-center text-[10px] text-white font-medium animate-pulse shadow-3d">
+              <span className="absolute -top-0.5 -right-0.5 h-4 w-4 bg-accent-fuchsia rounded-full flex items-center justify-center text-[10px] text-white font-medium shadow-glow-fuchsia">
                 3
               </span>
-            </button>
-            
+            </motion.button>
+
             {/* User Menu */}
-            <div className="relative group">
-              <button className="flex items-center space-x-2 p-2 text-gray-600 hover:text-gray-900 rounded-full hover:bg-white/50 transition-all duration-300">
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center text-white font-medium text-sm">
+            <div className="relative">
+              <motion.button
+                className="flex items-center space-x-2 p-1.5 rounded-element hover:bg-white/[0.05] transition-all duration-300"
+                onClick={() => setShowMenu(!showMenu)}
+                whileHover={{ scale: 1.02 }}
+              >
+                <div className="w-8 h-8 rounded-full bg-gradient-holographic flex items-center justify-center text-white font-display font-medium text-sm shadow-glow-sm">
                   {user?.name?.charAt(0).toUpperCase() || 'U'}
                 </div>
-              </button>
-              
+              </motion.button>
+
               {/* Dropdown Menu */}
-              <div className="absolute right-0 mt-2 w-48 glass rounded-element shadow-3d opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
-                <div className="p-3 border-b border-gray-200">
-                  <p className="text-sm font-medium text-gray-900">{user?.name}</p>
-                  <p className="text-xs text-gray-600 truncate">{user?.email}</p>
-                </div>
-                <button
-                  onClick={handleLogout}
-                  className="w-full flex items-center space-x-2 px-4 py-2 text-sm text-gray-700 hover:bg-white/50 transition-colors"
+              {showMenu && (
+                <motion.div
+                  className="absolute right-0 mt-2 w-56 glass-card shadow-ethereal overflow-hidden"
+                  initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
                 >
-                  <LogOut className="h-4 w-4" />
-                  <span>Logout</span>
-                </button>
-              </div>
+                  <div className="p-4 border-b border-glass-border">
+                    <p className="text-sm font-display font-medium text-text-primary">{user?.name}</p>
+                    <p className="text-xs text-text-tertiary truncate">{user?.email}</p>
+                  </div>
+                  <button
+                    onClick={handleLogout}
+                    className="w-full flex items-center space-x-2 px-4 py-3 text-sm text-text-secondary hover:text-text-primary hover:bg-white/[0.05] transition-all duration-300"
+                  >
+                    <LogOut className="h-4 w-4" />
+                    <span>Logout</span>
+                  </button>
+                </motion.div>
+              )}
             </div>
           </div>
         </div>
       </div>
-    </header>
+    </motion.header>
   );
 };
 

@@ -2,96 +2,324 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Custom CSS for glassmorphism and 3D effects */
-@layer utilities {
-  .glass {
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+/* ============================================
+   THE ETHEREAL ARCHIVE - DESIGN SYSTEM CSS
+   "The Drifting Library at Midnight"
+   ============================================ */
+
+/* === BASE LAYER === */
+@layer base {
+  :root {
+    /* Lantern Cursor Variables */
+    --cursor-x: 50%;
+    --cursor-y: 50%;
+    
+    /* Color References */
+    --color-void: #02040A;
+    --color-graphite: #0A0C14;
+    --color-accent-violet: #8B5CF6;
+    --color-accent-fuchsia: #D946EF;
+    --color-text-primary: #EDEDED;
+    --color-text-secondary: #A1A1AA;
+    
+    /* Transitions */
+    --ease-quintic: cubic-bezier(0.22, 1, 0.36, 1);
   }
-  
+
+  html {
+    scroll-behavior: smooth;
+    background-color: var(--color-void);
+  }
+
+  body {
+    font-family: 'Geist Sans', system-ui, sans-serif;
+    background-color: var(--color-void);
+    color: var(--color-text-primary);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Typography defaults */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Clash Display', system-ui, sans-serif;
+    letter-spacing: -0.02em;
+  }
+
+  /* Selection color */
+  ::selection {
+    background-color: rgba(139, 92, 246, 0.3);
+    color: #EDEDED;
+  }
+}
+
+/* === COMPONENTS LAYER === */
+@layer components {
+  /* Glass Card - The Holographic Panel */
+  .glass-card {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 1.5rem;
+    transition: all 0.4s var(--ease-quintic);
+  }
+
+  .glass-card:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 8px 32px rgba(139, 92, 246, 0.15);
+  }
+
+  /* Glass Dark - Deeper Frost */
   .glass-dark {
-    background: rgba(0, 0, 0, 0.15);
+    background: rgba(10, 12, 20, 0.8);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  /* Glass Button */
+  .glass-button {
+    background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.1);
-  }
-  
-  .shadow-3d {
-    box-shadow: 
-      0 8px 32px rgba(0, 0, 0, 0.12),
-      0 2px 8px rgba(0, 0, 0, 0.08);
-  }
-  
-  .shadow-3d-hover {
-    box-shadow: 
-      0 12px 40px rgba(0, 0, 0, 0.15),
-      0 4px 12px rgba(0, 0, 0, 0.1);
-  }
-  
-  .shadow-3d-lg {
-    box-shadow: 
-      0 16px 48px rgba(0, 0, 0, 0.15),
-      0 8px 16px rgba(0, 0, 0, 0.1);
-  }
-  
-  .gradient-mesh {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
-  }
-  
-  .animate-float {
-    animation: float 6s ease-in-out infinite;
-  }
-  
-  .animate-glow {
-    animation: glow 2s ease-in-out infinite alternate;
+    color: #EDEDED;
+    transition: all 0.3s var(--ease-quintic);
   }
 
-  /* Border radius utilities */
-  .rounded-card {
-    border-radius: 12px;
+  .glass-button:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(139, 92, 246, 0.5);
+    box-shadow: 0 0 20px -5px rgba(139, 92, 246, 0.3);
+    transform: translateY(-2px);
   }
-  
-  .rounded-element {
-    border-radius: 8px;
+
+  /* Holographic Gradient Button */
+  .btn-holographic {
+    background: linear-gradient(135deg, #8B5CF6 0%, #D946EF 100%);
+    color: white;
+    font-weight: 500;
+    border: none;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s var(--ease-quintic);
   }
-  
-  .rounded-button {
-    border-radius: 6px;
+
+  .btn-holographic::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.2) 50%, transparent 100%);
+    transform: translateX(-100%);
+    transition: transform 0.6s ease;
+  }
+
+  .btn-holographic:hover::before {
+    transform: translateX(100%);
+  }
+
+  .btn-holographic:hover {
+    box-shadow: 0 0 30px -5px rgba(139, 92, 246, 0.5);
+    transform: translateY(-2px);
+  }
+
+  /* Holographic Border (for cards on hover) */
+  .holographic-border {
+    position: relative;
+  }
+
+  .holographic-border::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    background: linear-gradient(135deg, #8B5CF6, #D946EF, #8B5CF6);
+    border-radius: inherit;
+    opacity: 0;
+    z-index: -1;
+    transition: opacity 0.4s var(--ease-quintic);
+  }
+
+  .holographic-border:hover::before {
+    opacity: 1;
+  }
+
+  /* Text Gradient */
+  .text-gradient-holographic {
+    background: linear-gradient(135deg, #8B5CF6 0%, #D946EF 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Grayscale to Color Image Transition */
+  .img-ethereal {
+    filter: grayscale(100%);
+    transition: filter 0.5s ease-out, transform 0.4s var(--ease-quintic);
+  }
+
+  .img-ethereal:hover,
+  .group:hover .img-ethereal {
+    filter: grayscale(0%);
+    transform: scale(1.05);
+  }
+
+  /* Badge/Tag - Glass Style */
+  .tag-glass {
+    background: rgba(139, 92, 246, 0.15);
+    border: 1px solid rgba(139, 92, 246, 0.3);
+    color: #A1A1AA;
+    padding: 0.25rem 0.75rem;
+    border-radius: 0.5rem;
+    font-size: 0.75rem;
+    transition: all 0.3s var(--ease-quintic);
+  }
+
+  .tag-glass:hover {
+    background: rgba(139, 92, 246, 0.25);
+    color: #EDEDED;
+  }
+
+  /* Input Field - Dark Glass */
+  .input-ethereal {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 0.75rem;
+    color: #EDEDED;
+    padding: 0.75rem 1rem;
+    transition: all 0.3s var(--ease-quintic);
+  }
+
+  .input-ethereal::placeholder {
+    color: #52525B;
+  }
+
+  .input-ethereal:focus {
+    outline: none;
+    border-color: rgba(139, 92, 246, 0.5);
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  /* Progress Bar - Holographic */
+  .progress-ethereal {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 9999px;
+    overflow: hidden;
+  }
+
+  .progress-ethereal-bar {
+    background: linear-gradient(90deg, #8B5CF6, #D946EF);
+    border-radius: 9999px;
+    transition: width 0.5s var(--ease-quintic);
   }
 }
 
-@keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
+/* === UTILITIES LAYER === */
+@layer utilities {
+  /* Noise Overlay Texture */
+  .noise-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    pointer-events: none;
+    opacity: 0.04;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  }
+
+  /* Lantern Cursor Effect */
+  .lantern-effect {
+    background: radial-gradient(
+      600px circle at var(--cursor-x) var(--cursor-y),
+      rgba(139, 92, 246, 0.08),
+      transparent 40%
+    );
+    pointer-events: none;
+    position: fixed;
+    inset: 0;
+    z-index: 40;
+    transition: opacity 0.3s ease;
+  }
+
+  /* Shimmer Animation */
+  .shimmer {
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.05) 50%,
+      transparent 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 2s linear infinite;
+  }
+
+  /* Glow effects */
+  .glow-violet {
+    box-shadow: 0 0 20px -5px rgba(139, 92, 246, 0.4);
+  }
+
+  .glow-fuchsia {
+    box-shadow: 0 0 20px -5px rgba(217, 70, 239, 0.4);
+  }
+
+  /* Text shadows for headers */
+  .text-shadow-glow {
+    text-shadow: 0 0 40px rgba(139, 92, 246, 0.3);
+  }
+
+  /* Perspective for 3D cards */
+  .perspective-1000 {
+    perspective: 1000px;
+  }
+
+  .preserve-3d {
+    transform-style: preserve-3d;
+  }
+
+  /* Star rating colors */
+  .star-filled {
+    color: #FFD700;
+  }
+
+  .star-empty {
+    color: #52525B;
+  }
 }
 
-@keyframes glow {
-  from { box-shadow: 0 0 20px rgba(34, 197, 94, 0.2); }
-  to { box-shadow: 0 0 30px rgba(34, 197, 94, 0.4); }
-}
-
-/* Smooth scrolling */
-html {
-  scroll-behavior: smooth;
-}
-
-/* Custom scrollbar */
+/* === SCROLLBAR (Dark Theme) === */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.05);
-  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.2);
-  border-radius: 3px;
+  background: rgba(139, 92, 246, 0.3);
+  border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(139, 92, 246, 0.5);
+}
+
+/* === KEYFRAMES (Supplementary) === */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(139, 92, 246, 0.2); }
+  50% { box-shadow: 0 0 40px rgba(139, 92, 246, 0.4); }
+}
+
+/* === FOCUS VISIBLE (Accessibility) === */
+:focus-visible {
+  outline: 2px solid rgba(139, 92, 246, 0.5);
+  outline-offset: 2px;
 }
